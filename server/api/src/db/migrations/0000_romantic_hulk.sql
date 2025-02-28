@@ -10,7 +10,7 @@ CREATE TABLE `users` (
 	`email` text NOT NULL,
 	`username` text NOT NULL,
 	`password` text NOT NULL,
-	`name` text NOT NULL,
+	`name` text,
 	`created_at` integer NOT NULL
 );
 --> statement-breakpoint
