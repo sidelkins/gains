@@ -1,27 +1,22 @@
-<!-- <script lang="ts">
-import '../app.css';
-let { children } = $props();
-</script>
-
-{@render children()} -->
 <script lang="ts">
-import { onMount } from 'svelte';
-import { auth } from '$lib/stores/auth';
-import { navigating } from '$app/stores';
-import { page } from '$app/stores';
+	import "../app.css";
+	import { onMount } from 'svelte';
+	import { auth } from '$lib/stores/auth';
+	import { navigating } from '$app/stores';
+	import { page } from '$app/stores';
 
-let { children } = $props();
+	let { children } = $props();
 
-let isLoading = $state(true);
+	let isLoading = $state(true);
 
-onMount(async () => {
-	// Try to refresh the user state on initial load
-	await auth.refreshUser();
-	isLoading = false;
-});
+	onMount(async () => {
+		// Try to refresh the user state on initial load
+		await auth.refreshUser();
+		isLoading = false;
+	});
 
-let currentPath = $page.url.pathname;
-let isPublicRoute = $derived(['/login', '/register'].includes(currentPath));
+	let currentPath = $page.url.pathname;
+	let isPublicRoute = $derived(['/login', '/register'].includes(currentPath));
 </script>
 
 <svelte:head>
