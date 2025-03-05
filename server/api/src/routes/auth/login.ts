@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
+import { or, eq } from 'drizzle-orm';
 import { users } from '../../db/schema';
 
 export default async function (fastify: FastifyInstance) {
@@ -8,50 +8,51 @@ export default async function (fastify: FastifyInstance) {
     schema: {
       body: {
         type: 'object',
-        required: ['email', 'password'],
+        required: ['identifier', 'password'],
         properties: {
-          email: { type: 'string', format: 'email' },
+          identifier: { type: 'string' },
           password: { type: 'string' }
         }
       }
     }
   }, async (request, reply) => {
-    const { email, password } = request.body as { 
-      email: string, 
+    const { identifier, password } = request.body as { 
+      identifier: string,
       password: string 
     };
     
     try {
-      // Find user by email
+      // Find user by email OR username
       const user = await fastify.db.query.users.findFirst({
-        where: eq(users.email, email)
+        where: or(eq(users.email, identifier), eq(users.username, identifier))
       });
-      
+
       if (!user) {
         return reply.code(401).send({ error: 'Invalid credentials' });
       }
-      
+
       // Verify password
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
         return reply.code(401).send({ error: 'Invalid credentials' });
       }
-      
-      // Create session
-      const { sessionId, expiresAt } = await fastify.createSession(user.id);
-      
+
       // Generate JWT token
-      const token = fastify.jwt.sign({ id: user.id });
-      
-      // Set cookies
-      reply.setCookie('sessionId', sessionId, {
+      const token = fastify.jwt.sign({ 
+        id: user.id, 
+        username: user.username, 
+        email: user.email 
+      });
+
+      // Set JWT as HTTP-only cookie
+      reply.setCookie('jwt', token, {
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        expires: expiresAt
+        maxAge: 60 * 60 * 24 * 7 // 7 days
       });
-      
+
       return { 
         token,
         user: {

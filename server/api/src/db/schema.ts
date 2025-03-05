@@ -1,23 +1,17 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   email: text('email').notNull().unique(),
   username: text('username').notNull().unique(),
   password: text('password').notNull(),
-  name: text('name'),
-  createdAt: integer('created_at', { mode: 'timestamp' })
+  first_name: text('first_name'),
+  last_name: text('last_name'),
+  created_at: text('created_at')
     .notNull()
-    .$defaultFn(() => new Date()),
-});
-
-export const sessions = sqliteTable('sessions', {
-  id: text('id').primaryKey(),
-  userId: integer('user_id').notNull().references(() => users.id),
-  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+    .default(sql`CURRENT_TIMESTAMP`),  // Uses SQLite's built-in timestamp
 });
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-export type Session = typeof sessions.$inferSelect;
-export type NewSession = typeof sessions.$inferInsert;

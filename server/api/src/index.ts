@@ -3,7 +3,8 @@ import dbPlugin from './plugins/db';
 import authPlugin from './plugins/auth';
 import corsPlugin from './plugins/cors';
 import authRoutes from './routes/auth';
-import userRoutes from './routes/protected/user';
+import register from './routes/auth/register';
+import login from './routes/auth/login';
 
 async function start() {
   const fastify = Fastify({
@@ -16,8 +17,10 @@ async function start() {
   await fastify.register(authPlugin);
 
   // Register routes
-  fastify.register(authRoutes, { prefix: '/auth' });
-  fastify.register(userRoutes, { prefix: '/user' });
+  fastify.register(register, { prefix: '/api'})
+  fastify.register(login, { prefix: '/api'})
+  //fastify.register(authRoutes, { prefix: '/auth' });
+  //fastify.register(userRoutes, { prefix: '/user' });
 
   // Catch-all route
   fastify.get('/', async () => {

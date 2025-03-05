@@ -1,15 +1,20 @@
 import { FastifyInstance } from 'fastify';
 import registerRoute from './register';
 import loginRoute from './login';
-import refreshRoute from './refresh';
 
 export default async function (fastify: FastifyInstance) {
   fastify.register(registerRoute);
   fastify.register(loginRoute);
-  fastify.register(refreshRoute);
   
-  // Logout route
-  fastify.post('/logout', async (request, reply) => {
-    return reply.clearCookie('sessionId').send({ success: true });
+  fastify.post('/logout', async (_request, reply) => {
+    // Clear the JWT cookie
+    reply.clearCookie('jwt', {
+      path: '/', 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'lax'
+    });
+
+    return reply.send({ message: 'Logged out successfully' });
   });
 }

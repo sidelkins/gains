@@ -7,21 +7,23 @@ export default async function (fastify: FastifyInstance) {
     schema: {
       body: {
         type: 'object',
-        required: ['username', 'email', 'password', 'name'],
+        required: ['username', 'email', 'password'],
         properties: {
           username: { type: 'string' },
           email: { type: 'string', format: 'email' },
           password: { type: 'string', minLength: 6 },
-          name: { type: 'string' }
+          first_name: { type: 'string' },
+          last_name: { type: 'string' }
         }
       }
     }
   }, async (request, reply) => {
-    const { username, email, password, name } = request.body as { 
+    const { username, email, password, first_name, last_name } = request.body as { 
       username: string,
       email: string, 
       password: string, 
-      name: string 
+      first_name: string,
+      last_name: string
     };
     
     try {
@@ -29,46 +31,43 @@ export default async function (fastify: FastifyInstance) {
       const existingUser = await fastify.db.query.users.findFirst({
         where: (users, { eq }) => eq(users.email, email)
       });
-      
+
       if (existingUser) {
         return reply.code(400).send({ error: 'User already exists' });
       }
-      
+
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-      
+
       // Create user
       const result = await fastify.db.insert(users).values({
         username,
         email,
         password: hashedPassword,
-        name
+        first_name,
+        last_name
       }).returning({ id: users.id });
-      
+
       const userId = result[0].id;
-      
-      // Create session
-      const { sessionId, expiresAt } = await fastify.createSession(userId);
-      
+
       // Generate JWT token
-      const token = fastify.jwt.sign({ id: userId });
-      
-      // Set cookies
-      reply.setCookie('sessionId', sessionId, {
+      const token = fastify.jwt.sign({ id: userId, username, email });
+
+      // Set JWT as HTTP-only cookie
+      reply.setCookie('jwt', token, {
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        expires: expiresAt
+        maxAge: 60 * 60 * 24 * 7 // 7 days
       });
-      
+
       return { 
         token,
         user: {
           id: userId,
           username,
-          email,
-          name
+          email
         }
       };
     } catch (err) {
