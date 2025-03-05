@@ -5,7 +5,7 @@ export const actions: Actions = {
         const formData = await event.request.formData();
 		const identifier = formData.get('identifier');
 		const password = formData.get('password');
-		console.log(`identifier ${identifier} password ${password}`)
+
 		const loginFetch = await event.fetch('http://192.168.1.69:3000/api/login', {
 			method: 'POST',
 			headers: {
