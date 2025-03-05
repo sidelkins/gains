@@ -11,6 +11,9 @@ importers:
       axios:
         specifier: ^1.8.1
         version: 1.8.1
+      cookie:
+        specifier: ^1.0.2
+        version: 1.0.2
       daisyui:
         specifier: 5.0.0-beta.9
         version: 5.0.0-beta.9
@@ -513,6 +516,10 @@ packages:
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   daisyui@5.0.0-beta.9:
     resolution: {integrity: sha512-V+To8o1O8AaxSgdk9QrjXyq/e1AhdW1Z6oUI5iwrOjPs8avM7VQNqoTDCAE5rM0NcMbUfmFgQH8h8guiQ5QPOA==}
@@ -1233,6 +1240,8 @@ snapshots:
   commondir@1.0.1: {}
 
   cookie@0.6.0: {}
+
+  cookie@1.0.2: {}
 
   daisyui@5.0.0-beta.9: {}
 
