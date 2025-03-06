@@ -1,40 +1,38 @@
 import type { Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+import { auth } from '$lib/stores/auth';
 
-export const handle: Handle = async ({ event, resolve }) => {
-  // List of protected routes
-  const protectedRoutes = ['/dashboard', '/profile'];
-  
-  // List of auth routes where logged-in users should be redirected away from
-  const authRoutes = ['/login', '/register'];
-  
-  // Check if this is a protected route
-  const isProtectedRoute = protectedRoutes.some(route => 
-    event.url.pathname.startsWith(route)
-  );
-  
-  const isAuthRoute = authRoutes.some(route => 
-    event.url.pathname === route
-  );
-  
-  // Get the session cookie (this would normally verify the session on the server)
-  const sessionId = event.cookies.get('sessionId');
-  
-  // If trying to access protected route without auth, redirect to login
-  if (isProtectedRoute && !sessionId) {
-    return new Response(null, {
-      status: 302,
-      headers: { Location: '/login' }
-    });
-  }
-  
-  // If trying to access auth routes while logged in, redirect to dashboard
-  if (isAuthRoute && sessionId) {
-    return new Response(null, {
-      status: 302,
-      headers: { Location: '/dashboard' }
-    });
-  }
-  
-  // Otherwise, just resolve the route normally
-  return await resolve(event);
+export const authHook: Handle = async ({ event, resolve }) => {
+    const token = event.cookies.get('jwt');
+
+    if (token) {
+        try {
+            // Verify token on server
+            const verifyToken = await fetch('http://192.168.1.69:3000/api/verify', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+
+            if (verifyToken.ok) {
+                const { user } = await verifyToken.json();
+                event.locals.authenticated = true;
+                event.locals.user = user;
+                event.locals.token = token; // Store it in locals to make it available in session and load functions
+            } else {
+                event.cookies.set('jwt', '' , { path: '/' });
+            }
+        } catch (err) {
+            console.error('Error during token verification:', err);
+        }
+    } else {
+        event.locals.authenticated = false;
+        event.locals.user = null;
+        event.locals.token = null;
+    }
+    
+    return await resolve(event);
 };
+
+export const handle = sequence(authHook);

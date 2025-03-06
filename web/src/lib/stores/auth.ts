@@ -1,26 +1,30 @@
+import type { User } from '$lib/types';
 import { writable } from 'svelte/store';
 
 interface AuthStore {
-  isAuthenticated: boolean;
-  user: { id: number; username: string } | null;
+  authenticated: boolean;
+  user: any | null;
+  token: string | undefined | null;
 }
 
 export const auth = writable<AuthStore>({
-  isAuthenticated: false,
+  authenticated: false,
   user: null,
+  token: null
 });
 
-// Method to update the auth state
-export function login(user: { id: number; username: string }) {
+export function login(user: any, token: string | undefined | null) {
   auth.set({
-    isAuthenticated: true,
-    user
+    authenticated: true,
+    user,
+    token
   });
 }
 
 export function logout() {
   auth.set({
-    isAuthenticated: false,
-    user: null
+    authenticated: false,
+    user: null,
+    token: null
   });
 }

@@ -2,30 +2,6 @@
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { login } from '$lib/stores/auth';
-
-  const API_URL = 'http://192.168.1.69:3000/api'
-  let identifier = '';
-  let password = '';
-  let error = '';
-
-  async function handleLogin() {
-      error = ''; // Clear previous error
-
-      const res = await fetch(API_URL + '/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier, password })
-      });
-
-      if (res.ok) {
-          const { user, token } = await res.json();
-
-          goto('/dashboard');
-      } else {
-          error = 'Invalid credentials';
-      }
-  }
 </script>
 
 <div class="min-h-screen bg-no-repeat bg-cover flex items-center justify-center">
@@ -42,11 +18,11 @@
           <div class="label">
               <span class="label-text">Username or Email</span>
           </div>
-          <input class="input input-bordered" 
+          <input
+            class="input input-bordered"
             id="identifier"
             name="identifier"
-            bind:value={identifier} 
-            required 
+            required
             autocomplete="email"
           />
       </label>
@@ -55,12 +31,12 @@
           <div class="label">
               <span class="label-text">Password</span>
           </div>
-          <input class="input input-bordered"
+          <input
+            class="input input-bordered"
             type="password"
             id="password"
             name="password"
-            bind:value={password} 
-            required 
+            required
             autocomplete="current-password"
           />
       </label>
@@ -68,11 +44,16 @@
       <button class="btn btn-primary" type="submit">Log in</button>
     </form>
 
-    {#if ($page.form?.message && $page.form?.message.length > 1) || $page.form?.type === 'error'}
-      <div class="mt-4 p-2 bg-red-100 text-red-600 rounded-md text-sm">
-        {$page.form.message}
-      </div>
+    {#if ($page.form?.message && $page.form?.message.length > 1)}
+      {#if $page.form.success}
+        <div class="mt-4 p-2 bg-green-100 text-green-600 rounded-md text-sm">
+          {$page.form.message}
+        </div>
+      {:else if !$page.form.success}
+        <div class="mt-4 p-2 bg-red-100 text-red-600 rounded-md text-sm">
+          {$page.form.message}
+        </div>
+      {/if}
     {/if}
-
   </div>
 </div>
