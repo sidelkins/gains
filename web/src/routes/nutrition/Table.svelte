@@ -41,6 +41,7 @@
             </button>
         </form>
     </div>
+    {#if entries.length > 0}
     <table class="table">
         <thead>
             <tr>
@@ -63,7 +64,7 @@
             </tr>
         </thead>
         <tbody>
-            {#if entries}
+            
                 {#each entries as entry, index}
                     <tr>
                         <th>
@@ -83,11 +84,7 @@
                         <td>{entry.fat}</td>
                     </tr>
                 {/each}
-            {:else}
-                <!-- TODO: Display no entries text -->
-            {/if}
         </tbody>
-        <!-- foot -->
         <tfoot>
             <tr>
                 <th></th>
@@ -101,4 +98,9 @@
             </tr>
         </tfoot>
     </table>
+    {:else}
+    <div class="flex justify-center">
+        <span>No entries yet!</span>
+    </div>
+    {/if}
 </div>

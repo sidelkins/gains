@@ -52,12 +52,8 @@ export const actions: Actions = {
         });
 
         const response = await res.json();
-
-        if (response.ok) {
-            return { status: 200 };
-        } else {
-            return { status: 500, body: { error: 'Failed to add entry' } };
-        }
+		
+        return response;
     },
     delete: async (event) => {
         const formData = await event.request.formData();
