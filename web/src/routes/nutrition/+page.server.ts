@@ -30,7 +30,6 @@ export const load = (async (event) => {
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-    // Action to add a new nutrition entry
     add: async (event) => {
         const formData = await event.request.formData();
 
@@ -60,18 +59,14 @@ export const actions: Actions = {
             return { status: 500, body: { error: 'Failed to add entry' } };
         }
     },
-
-    // Action to delete selected nutrition entries
     delete: async (event) => {
         const formData = await event.request.formData();
-        const idsToDelete = formData.getAll('ids') as string[]; // Get all IDs to delete
-
+		const idsToDelete = (formData.get('ids') as string).split(',');
         if (!idsToDelete || idsToDelete.length === 0) {
             return { status: 400, body: { error: 'No IDs provided for deletion' } };
         }
 
         try {
-            // Send a DELETE request to the API for all IDs at once
             const res = await event.fetch(API_URL + '/nutrition', {
                 method: 'DELETE',
                 headers: {

@@ -2,7 +2,7 @@
     import type { NutritionEntry } from "$lib/types";
     import { enhance } from "$app/forms";
 
-    export let entries: NutritionEntry[] | undefined;
+    export let entries: NutritionEntry[];
 
     // Track selected rows using an array of booleans
     let selectedEntries: boolean[] = [];
@@ -17,28 +17,40 @@
         if (!entries) return [];
         return entries
             .filter((_, index) => selectedEntries[index])
-            .map(entry => entry.id); // Assuming each entry has an `id` field
+            .map(entry => entry.id);;
     }
+
+    // Function to toggle all entries
+    function toggleAll(event: Event) {
+        const target = event.target as HTMLInputElement;
+        const isChecked = target.checked;
+        selectedEntries = selectedEntries.map(() => isChecked);
+    }
+
+    // Reactive statement to update the header checkbox state
+    $: allSelected = entries && entries.length > 0 && selectedEntries.every(selected => selected);
+    $: someSelected = entries && entries.length > 0 && selectedEntries.some(selected => selected);
 </script>
 
-<!-- Toolbar with delete button -->
-<div class="flex justify-end mb-4">
-    <form method="POST" action="?/delete" use:enhance>
-        <input type="hidden" name="ids" value={getSelectedIds().join(',')} />
-        <button class="btn btn-error" type="submit" disabled={getSelectedIds().length === 0}>
-            Delete Selected
-        </button>
-    </form>
-</div>
-
 <div class="overflow-x-auto">
+    <div class="flex justify-start">
+        <form method="POST" action="?/delete" use:enhance>
+            <input type="hidden" name="ids" value={getSelectedIds()} />
+            <button class="btn btn-error" type="submit" disabled={getSelectedIds().length === 0}>
+                Delete
+            </button>
+        </form>
+    </div>
     <table class="table">
-        <!-- head -->
         <thead>
             <tr>
                 <th>
                     <label>
-                        <input type="checkbox" class="checkbox" disabled={!entries} />
+                        <input type="checkbox" class="checkbox"
+                            bind:checked={allSelected}
+                            on:change={toggleAll}
+                            indeterminate={someSelected && !allSelected}
+                            disabled={entries.length == 0} />
                     </label>
                 </th>
                 <th>Date</th>
