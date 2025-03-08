@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+    import { logout } from '$lib/api';
 
 	export let user: any;
 
@@ -18,6 +19,7 @@
 			{:else}
 				<span class="text-2xl -mt-1">{letter}</span>
 			{/if} -->
+			{user.username}
 		</div>
 	</div>
 
@@ -26,12 +28,14 @@
 		class="dropdown-content z-[1] text-neutral-200 menu p-2 shadow bg-neutral mt-2 rounded-box w-52"
 	>
 		<p class="text-lg ml-4 font-bold">
-			{ user.first_name ? `${user.first_name} ${user.last_name}` : user.username}
+			<!-- { user.first_name ? `${user.first_name} ${user.last_name}` : user.username} -->
 		</p>
 		<li><button on:click={() => goto('/profile')}>Profile</button></li>
 		<li><button on:click={() => goto('/settings')}>Settings</button></li>
-		<form method="post">
+		<li><button on:click={() => logout}>Logout</button></li>
+		<!-- <li><button on:click={() => goto('/logout')}>Logout</button></li> -->
+		<!-- <form method="post">
 			<li><button formaction="/?/logout">Logout</button></li>
-		</form>
+		</form> -->
 	</ul>
 </div>

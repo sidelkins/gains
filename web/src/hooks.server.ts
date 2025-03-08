@@ -19,9 +19,9 @@ export const authHook: Handle = async ({ event, resolve }) => {
                 const { user } = await verifyToken.json();
                 event.locals.authenticated = true;
                 event.locals.user = user;
-                event.locals.token = token; // Store it in locals to make it available in session and load functions
+                // event.locals.token = token; // Store it in locals to make it available in session and load functions
             } else {
-                event.cookies.set('jwt', '' , { path: '/' });
+                event.cookies.delete('jwt', { path: '/', secure: event.url.protocol === 'https:' });
             }
         } catch (err) {
             console.error('Error during token verification:', err);
@@ -29,7 +29,7 @@ export const authHook: Handle = async ({ event, resolve }) => {
     } else {
         event.locals.authenticated = false;
         event.locals.user = null;
-        event.locals.token = null;
+        //event.locals.token = null;
     }
     
     return await resolve(event);

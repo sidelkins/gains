@@ -5,12 +5,10 @@ export const load: LayoutServerLoad = async (event) => {
 		return {
             authenticated: event.locals.authenticated,
 			user: event.locals.user,
-			token: event.locals.token
 		};
 	}
 	return {
         authenticated: false,
-		user: null,
-		token: null
+		user: null
 	};
 };

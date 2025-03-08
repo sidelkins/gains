@@ -1,14 +1,16 @@
 import Fastify from 'fastify';
+
 import dbPlugin from './plugins/db';
 import authPlugin from './plugins/auth';
 import corsPlugin from './plugins/cors';
+
 import authRoutes from './routes/auth';
-import register from './routes/auth/register';
-import login from './routes/auth/login';
+import userRoutes from './routes/user';
+import nutritionRoutes from './routes/nutrition';
 
 async function start() {
   const fastify = Fastify({
-    logger: true
+    //logger: true
   });
 
   // Register plugins
@@ -16,11 +18,17 @@ async function start() {
   await fastify.register(dbPlugin);
   await fastify.register(authPlugin);
 
-  // Register routes
-  fastify.register(register, { prefix: '/api'})
-  fastify.register(login, { prefix: '/api'})
-  //fastify.register(authRoutes, { prefix: '/auth' });
-  //fastify.register(userRoutes, { prefix: '/user' });
+  // Routes
+  const apiPrefix = { prefix: '/api' };
+  
+  fastify.register(authRoutes, apiPrefix);
+
+  // Protected routes
+  fastify.register(async (instance) => {
+    instance.addHook('preHandler', instance.authenticate);
+    instance.register(userRoutes);
+    instance.register(nutritionRoutes);
+  }, apiPrefix);
 
   // Catch-all route
   fastify.get('/', async () => {

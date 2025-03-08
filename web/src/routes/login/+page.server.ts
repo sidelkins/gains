@@ -18,7 +18,8 @@ export const actions: Actions = {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ identifier, password })
+      body: JSON.stringify({ identifier, password }),
+      credentials: 'include'
     });
 
     if (loginFetch.status === 200) {
@@ -30,7 +31,7 @@ export const actions: Actions = {
         httpOnly: true, // Prevents access from JavaScript
         secure: process.env.NODE_ENV === 'production', // Secure in production
         sameSite: 'strict', // CSRF protection
-        maxAge: 60 * 60 * 24 * 7 // Expires in 7 days
+        maxAge: 60 * 15 // Expires in 15 minutes
       });
       return redirect(302, '/dashboard')
     } else if (loginFetch.status === 401) {

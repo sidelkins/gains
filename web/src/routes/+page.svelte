@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { auth, isAuthenticated } from '$lib/stores/old_auth.js';
   import { redirect } from '@sveltejs/kit';
   import { onMount } from 'svelte';
 
@@ -8,32 +7,28 @@
   let isLoading = $state(true);
 </script>
 
-{#if $isAuthenticated}
-  {redirect(200, '/dashboard')}
-{:else if !$isAuthenticated}
+<div class="flex justify-center">
   <div class="flex justify-center">
-    <div class="flex justify-center">
-        <div class="flex flex-col items-center text-center gap-6 max-w-xl">    
-            <h1 class="text-5xl font-bold">gains.</h1>
-    
-            <span class="">
-                Maximize your health and fitness journey with gains—your all-in-one app for tracking calories, macronutrients, supplements, vitamins, and hydration effortlessly!
-            </span>
-    
-            <div class="flex gap-4">
-                <a class="btn btn-primary" on:click={goto('register')}>
-                    Get started
-                </a>
-    
-                <!-- <a class="btn btn-neutral">
-                    See our blog
-                    <i class="fa-solid fa-blog"></i>
-                </a> -->
-            </div>
-        </div>
-    </div>
+      <div class="flex flex-col items-center text-center gap-6 max-w-xl">    
+          <h1 class="text-5xl font-bold">gains.</h1>
+  
+          <span class="">
+              Maximize your health and fitness journey with gains—your all-in-one app for tracking calories, macronutrients, supplements, vitamins, and hydration effortlessly!
+          </span>
+  
+          <div class="flex gap-4">
+              <a class="btn btn-primary" on:click={goto('register')}>
+                  Get started
+              </a>
+  
+              <!-- <a class="btn btn-neutral">
+                  See our blog
+                  <i class="fa-solid fa-blog"></i>
+              </a> -->
+          </div>
+      </div>
   </div>
-{/if}
+</div>
 
 <!-- <script lang="ts">
   import { auth } from '$lib/stores/auth';

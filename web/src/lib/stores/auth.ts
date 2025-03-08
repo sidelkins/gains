@@ -4,27 +4,23 @@ import { writable } from 'svelte/store';
 interface AuthStore {
   authenticated: boolean;
   user: any | null;
-  token: string | undefined | null;
 }
 
 export const auth = writable<AuthStore>({
   authenticated: false,
-  user: null,
-  token: null
+  user: null
 });
 
-export function login(user: any, token: string | undefined | null) {
+export function login(user: any) {
   auth.set({
     authenticated: true,
-    user,
-    token
+    user
   });
 }
 
 export function logout() {
   auth.set({
     authenticated: false,
-    user: null,
-    token: null
+    user: null
   });
 }

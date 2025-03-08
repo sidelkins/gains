@@ -2,6 +2,7 @@
     import { goto } from "$app/navigation";
     import { auth } from "$lib/stores/auth";
     import Avatar from "./Avatar.svelte";
+    //$: console.log('Auth store in Header:', $auth);
 </script>
   
   <div class="navbar bg-base-100">
@@ -25,9 +26,9 @@
         <ul
           tabindex="0"
           class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-          {#if $auth.isAuthenticated}
+          {#if $auth.authenticated}
           <li><a on:click={() => goto('/dashboard')}>Dashboard</a></li>
-          <li><a on:click={() => goto('/nutrition')}>Calories and Macros</a></li>
+          <li><a on:click={() => goto('/nutrition')}>Nutrition</a></li>
           <li><a on:click={() => goto('/supplements')}>Supplements</a></li>
           <li><a on:click={() => goto('/vitamins')}>Vitamins</a></li>
           <li><a on:click={() => goto('/hydration')}>Hydration</a></li>
@@ -38,9 +39,9 @@
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">
-        {#if $auth.isAuthenticated}
+        {#if $auth.authenticated}
         <li><a on:click={() => goto('dashboard')}>Dashboard</a></li>
-        <li><a on:click={() => goto('nutrition')}>Calories and Macros</a></li>
+        <li><a on:click={() => goto('nutrition')}>Nutrition</a></li>
         <li><a on:click={() => goto('supplements')}>Supplements</a></li>
         <li><a on:click={() => goto('vitamins')}>Vitamins</a></li>
         <li><a on:click={() => goto('hydration')}>Hydration</a></li>
@@ -48,7 +49,7 @@
       </ul>
     </div>
     <div class="navbar-end">
-      {#if $auth.isAuthenticated}
+      {#if $auth.authenticated}
         <Avatar user={$auth.user} />
       {:else}
         <!-- Display when user is not logged in -->

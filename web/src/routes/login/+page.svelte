@@ -5,7 +5,8 @@
 </script>
 
 <div class="min-h-screen bg-no-repeat bg-cover flex items-center justify-center">
-  <div class="flex flex-col gap-4 rounded-box bg-base-200 p-6 max-w-md">
+  <form method="post" use:enhance 
+  class="flex flex-col gap-4 rounded-box bg-base-200 p-6 max-w-md">
     <h1 class="text-3xl font-bold self-center">Log in</h1>
 
     <span class="self-center">
@@ -13,7 +14,6 @@
         <a class="link link-secondary" on:click={() => goto('register')}>Register</a>
     </span>
 
-    <form method="post" use:enhance>
       <label class="form-control">
           <div class="label">
               <span class="label-text">Username or Email</span>
@@ -42,7 +42,6 @@
       </label>
 
       <button class="btn btn-primary" type="submit">Log in</button>
-    </form>
 
     {#if ($page.form?.message && $page.form?.message.length > 1)}
       {#if $page.form.success}
@@ -55,5 +54,5 @@
         </div>
       {/if}
     {/if}
-  </div>
+    </form>
 </div>
