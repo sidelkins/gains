@@ -1,41 +1,41 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
-  const API_URL = 'http://192.168.1.69:3000/api'
-  let username = '';
-  let email = '';
-  let password = '';
-  let confirmPassword = '';
-  let error = '';
 
-  async function register() {
-    error = '';
+  // let username = '';
+  // let email = '';
+  // let password = '';
+  // let confirmPassword = '';
+  // let error = '';
 
-    if (password !== confirmPassword) {
-      error = 'Passwords do not match';
-      return;
-    }
+  // async function register() {
+  //   error = '';
 
-    const res = await fetch(API_URL + '/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        username, 
-        email, 
-        password 
-      })
-    });
+  //   if (password !== confirmPassword) {
+  //     error = 'Passwords do not match';
+  //     return;
+  //   }
 
-    const data = await res.json();
+  //   const res = await fetch(`${env.PUBLIC_API_URL}/register`, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ 
+  //       username, 
+  //       email, 
+  //       password 
+  //     })
+  //   });
 
-    if (!res.ok) {
-      error = data.error || 'Registration failed';
-      return;
-    }
+  //   const data = await res.json();
 
-    // Redirect to login or dashboard after success
-    goto('/login');
-  }
+  //   if (!res.ok) {
+  //     error = data.error || 'Registration failed';
+  //     return;
+  //   }
+
+  //   // Redirect to login or dashboard after success
+  //   goto('/login');
+  // }
 </script>
 
 <div class="min-h-screen bg-no-repeat bg-cover flex items-center justify-center">
@@ -53,7 +53,8 @@
   </a>
 
   <div class="divider my-0">OR</div> -->
-  <form on:submit|preventDefault={register}>
+  <form method="post" use:enhance
+    class="flex flex-col gap-4 rounded-box bg-base-200 p-6 max-w-md">
   <label class="form-control">
     <div class="label">
         <span class="label-text">Username</span>
@@ -62,7 +63,7 @@
     <input class="input input-bordered" 
       type="username" 
       id="username" 
-      bind:value={username} 
+      name="username"
       required 
       autocomplete="username"
       />
@@ -76,7 +77,7 @@
       <input class="input input-bordered" 
         type="email" 
         id="email" 
-        bind:value={email} 
+        name="email"
         required 
         autocomplete="email"
         />
@@ -90,7 +91,7 @@
       <input class="input input-bordered" 
         type="password" 
         id="password" 
-        bind:value={password} 
+        name="password"
         required 
         autocomplete="new-password"
         />
@@ -104,7 +105,7 @@
       <input class="input input-bordered" 
         type="password" 
         id="confirmPassword" 
-        bind:value={confirmPassword} 
+        name="password"
         required 
         autocomplete="new-password"
       />
