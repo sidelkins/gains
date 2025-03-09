@@ -7,6 +7,7 @@ import corsPlugin from './plugins/cors';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
 import nutritionRoutes from './routes/nutrition';
+import supplementRoutes from './routes/supplements';
 
 async function start() {
   const fastify = Fastify({
@@ -28,6 +29,7 @@ async function start() {
     instance.addHook('preHandler', instance.authenticate);
     instance.register(userRoutes);
     instance.register(nutritionRoutes);
+    instance.register(supplementRoutes);
   }, apiPrefix);
 
   // Catch-all route

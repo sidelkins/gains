@@ -1,22 +1,28 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { nutritionEntries, users } from '../../db/schema';
 import { and, eq, inArray } from 'drizzle-orm';
-import { request } from 'http';
+import { getUserIdFromRequest } from '../../handlers';
 
 export default async function (fastify: FastifyInstance) {    
-    fastify.get('/nutrition', async (request, reply) => {
-        const userId = request.user.id;
-        const entries = await fastify.db.select().from(nutritionEntries).where(eq(nutritionEntries.userId, userId));
+    fastify.get('/nutrition', async (request: FastifyRequest, reply: FastifyReply) => {
+        const entries = await fastify.db.select()
+                                        .from(nutritionEntries)
+                                        .where(
+                                          eq(nutritionEntries.userId, getUserIdFromRequest(request.user))
+                                        );
         return reply.send(entries);
     });
 
-    fastify.get('/nutrition/entries/today', async (request, reply) => {
-      const userId = request.user.id;
+    fastify.get('/nutrition/entries/today', async (request: FastifyRequest, reply: FastifyReply) => {
       const today = new Date().toISOString().split('T')[0];
       const entries = await fastify.db.select()
                                       .from(nutritionEntries)
-                                      .where(eq(nutritionEntries.userId, userId))
-                                      .where(eq(nutritionEntries.date, today));
+                                      .where(
+                                        and(
+                                          eq(nutritionEntries.userId, getUserIdFromRequest(request.user)),
+                                          eq(nutritionEntries.date, today)
+                                        )
+                                      );
       return reply.send(entries);
     });
 
@@ -35,8 +41,8 @@ export default async function (fastify: FastifyInstance) {
           }
         }
       }
-    }, async (request, reply) => {
-      const userId = request.user.id;
+    }, async (request: FastifyRequest, reply: FastifyReply) => {
+      const userId = getUserIdFromRequest(request.user);
       const {
         date,
         description,
@@ -60,31 +66,31 @@ export default async function (fastify: FastifyInstance) {
       return reply.status(201).send(newEntry);
     });
 
-    fastify.delete('/nutrition', async (request, reply) => {
-      const userId = request.user.id;
-      const { ids } = request.body;
-
+    fastify.delete('/nutrition', async (request: FastifyRequest, reply: FastifyReply) => {
+      const userId = getUserIdFromRequest(request.user);
+      const { ids }: any = request.body;
+    
       if (!ids || !Array.isArray(ids)) {
         return reply.status(400).send({ error: 'Invalid request body. Expected an array of IDs.' });
       }
-
+    
       try {
         // Delete the entries with the provided IDs
         await fastify.db
-            .delete(nutritionEntries)
-            .where(
-              and(
-                inArray(nutritionEntries.id, ids)),
-                eq(nutritionEntries.userId, userId)
+          .delete(nutritionEntries)
+          .where(
+            and(
+              inArray(nutritionEntries.id, ids),
+              eq(nutritionEntries.userId, userId)
             )
-            .execute();
-
+          )
+          .execute();
+    
         return reply.status(200).send({ message: 'Entries deleted successfully' });
       } catch (error) {
         console.error('Failed to delete entries:', error);
         return reply.status(500).send({ error: 'Failed to delete entries' });
       }
-
     });
       
 }

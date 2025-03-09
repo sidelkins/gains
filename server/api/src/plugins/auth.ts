@@ -1,8 +1,9 @@
 import fp from 'fastify-plugin';
 import jwt from '@fastify/jwt';
 import cookie from '@fastify/cookie';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-export default fp(async (fastify) => {
+export default fp(async (fastify: FastifyInstance) => {
   // Register JWT plugin
   await fastify.register(jwt, {
     secret: process.env.JWT_SECRET || 'supersecretkey',
@@ -18,7 +19,7 @@ export default fp(async (fastify) => {
   });
 
   // Authentication decorator
-  fastify.decorate('authenticate', async (request, reply) => {
+  fastify.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       // Verify JWT token
       await request.jwtVerify();
@@ -32,9 +33,5 @@ export default fp(async (fastify) => {
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
-  }
-
-  interface FastifyRequest {
-    user?: { id: number };
   }
 }
