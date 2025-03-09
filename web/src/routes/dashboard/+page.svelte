@@ -1,16 +1,15 @@
 <script lang="ts">
-    import { auth } from '$lib/stores/auth';
     let { data } = $props();
     let isLoading = $state(true);    
     let error = null;
 
     const today = { calories: 0, protein: 0, carbs: 0, fat: 0 };
-
-    data.props?.entries.forEach(e => {
-      today.calories += e.calories;
-      today.protein += e.protein;
-      today.carbs += e.carbs;
-      today.fat += e.fat;
+    const entries = data.props?.entries || [];
+    entries.forEach(e => {
+      today.calories += e.calories || 0;
+      today.protein += e.protein || 0;
+      today.carbs += e.carbs || 0;
+      today.fat += e.fat || 0;
     });
 </script>
 <div class="flex items-center justify-center">

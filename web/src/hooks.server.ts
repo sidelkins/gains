@@ -1,6 +1,6 @@
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { auth } from '$lib/stores/auth';
+import { env } from '$env/dynamic/public'
 
 export const authHook: Handle = async ({ event, resolve }) => {
     const token = event.cookies.get('jwt');
@@ -8,7 +8,7 @@ export const authHook: Handle = async ({ event, resolve }) => {
     if (token) {
         try {
             // Verify token on server
-            const verifyToken = await fetch('http://192.168.1.69:3000/api/verify', {
+            const verifyToken = await fetch(`${env.PUBLIC_API_URL}/verify`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

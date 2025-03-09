@@ -9,6 +9,8 @@ import userRoutes from './routes/user';
 import nutritionRoutes from './routes/nutrition';
 import supplementRoutes from './routes/supplements';
 
+const port = process.env.PORT || 3000;
+
 async function start() {
   const fastify = Fastify({
     //logger: true
@@ -38,8 +40,8 @@ async function start() {
   });
 
   try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
-    console.log('Server is running on port 3000');
+    await fastify.listen({ port, host: '0.0.0.0' });
+    console.log(`Server is running on port ${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

@@ -18,3 +18,11 @@ export type NutritionEntry = {
 	carbs: number | null;
 	fat: number | null;
 };
+
+export type SupplementEntry = {
+	id: number;
+	user_id: number;
+	date: Date;
+	supplement: string | null;
+	quantity: number;
+};

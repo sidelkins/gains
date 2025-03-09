@@ -1,14 +1,13 @@
 import { json, redirect, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "../$types";
 import type { NutritionEntry } from "$lib/types";
-
-const API_URL = 'http://192.168.1.69:3000/api';
+import { env } from '$env/dynamic/public'
 
 export const load = (async (event) => {
     if (!event.locals.user) {
         return redirect(302, '/login');
     } else {
-        const res = await event.fetch(API_URL + '/nutrition', {
+        const res = await event.fetch(`${env.PUBLIC_API_URL}/nutrition`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,7 +41,7 @@ export const actions: Actions = {
             fat: formData.get('fat')
         };
 
-        const res = await event.fetch(API_URL + '/nutrition', {
+        const res = await event.fetch(`${env.PUBLIC_API_URL}/nutrition`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -63,7 +62,7 @@ export const actions: Actions = {
         }
 
         try {
-            const res = await event.fetch(API_URL + '/nutrition', {
+            const res = await event.fetch(`${env.PUBLIC_API_URL}/nutrition`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

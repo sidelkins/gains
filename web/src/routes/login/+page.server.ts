@@ -1,5 +1,6 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
+import { env } from '$env/dynamic/public'
 
 export const load: PageServerLoad = async (event) => {
   if (event.locals.user) {
@@ -13,7 +14,7 @@ export const actions: Actions = {
     const identifier = formData.get('identifier');
     const password = formData.get('password');
 
-    const loginFetch = await event.fetch('http://192.168.1.69:3000/api/login', {
+    const loginFetch = await event.fetch(`${env.PUBLIC_API_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
