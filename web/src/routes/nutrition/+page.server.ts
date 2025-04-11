@@ -80,5 +80,43 @@ export const actions: Actions = {
             console.error('Error deleting entries:', error);
             return { status: 500, body: { error: 'Failed to delete entries' } };
         }
-    }
+    },
+    analyze: async (event) => {
+        const formData = await event.request.formData();
+        
+        // Extract the file from form data
+        const file = formData.get('file') as File;
+
+        if (!file) {
+            return { status: 400, body: { error: 'No file uploaded' } };
+        }
+
+        // Prepare the form data for FastAPI
+        const fastApiFormData = new FormData();
+        fastApiFormData.append('file', file);
+        
+        // Send the image to FastAPI for classification
+        const fastApiRes = await event.fetch(`http://127.0.0.1:8000/classify/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${event.cookies.get('jwt')}`,
+            },
+            body: fastApiFormData
+        });
+
+        if (!fastApiRes.ok) {
+            return { status: 500, body: { error: 'Failed to classify the image' } };
+        }
+
+        // Parse the response from FastAPI
+        const classificationData = await fastApiRes.json();
+
+        // Return the classification data back to the client
+        return {
+            status: 200,
+            body: {
+                classification: classificationData
+            }
+        };
+    },
 };

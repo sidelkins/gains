@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-
+  const visionApiEnabled: boolean = true;
   // Set the default date to today's date in yyyy-mm-dd format
   const today = new Date().toISOString().split('T')[0];
   const defaultNumericVal = 0;
@@ -26,7 +26,39 @@
       fat: defaultNumericVal
     };
   }
+
+  function setFormToVisionResponse(visionResponse: any) {
+    console.log(visionResponse)
+    let info = visionResponse.data.body.classification.nutrition_info;
+    formData = {
+      date: today,
+      description: info.product_name,
+      calories: info.calories,
+      protein: info.protein,
+      carbs: info.carbohydrates,
+      fat: info.fat
+    }
+  }
 </script>
+
+{#if visionApiEnabled}
+<h2 class="text-2xl">Vision</h2>
+<form method="POST" action="?/analyze" enctype="multipart/form-data" 
+    use:enhance={() => {
+        return async ({ result }) => {
+            console.log('result')
+            setFormToVisionResponse(result);
+        };
+  }}>
+
+    <input class="file-input" 
+        type="file" 
+        name="file" 
+        accept="image/*" 
+        required />
+    <button class="btn" type="submit">Analyze</button>
+</form>
+{/if}
 
 <form
   class="flex gap-4"
