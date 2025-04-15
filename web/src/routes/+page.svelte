@@ -16,10 +16,12 @@
               Maximize your health and fitness journey with gains—your all-in-one app for tracking calories, macronutrients, supplements, vitamins, and hydration effortlessly!
           </span>
   
-          <div class="flex gap-4">
-              <a class="btn btn-primary" on:click={goto('register')}>
+          <div class="flex flex-col gap-4">
+              <a class="btn btn-primary" on:click={() => goto('register')}>
                   Get started
               </a>
+
+              <span>Already have an account? <a class="link link-secondary" on:click={() => goto('login')}>Log in</a></span>
   
               <!-- <a class="btn btn-neutral">
                   See our blog
@@ -29,27 +31,3 @@
       </div>
   </div>
 </div>
-
-<!-- <script lang="ts">
-  import { auth } from '$lib/stores/auth';
-</script>
-
-<div class="container">
-  <h1>Welcome to SvelteKit + Fastify Auth Demo</h1>
-  
-  {#if $auth.user}
-    <div class="welcome">
-      <h2>Hello, {$auth.user.name}!</h2>
-      <p>You are logged in with {$auth.user.email}</p>
-      <a href="/dashboard" class="button">Go to Dashboard</a>
-    </div>
-  {:else}
-    <div class="auth-options">
-      <h2>Get Started</h2>
-      <div class="buttons">
-        <a href="/login" class="button">Login</a>
-        <a href="/register" class="button secondary">Register</a>
-      </div>
-    </div>
-  {/if}
-</div> -->

@@ -19,7 +19,7 @@
               <span class="label-text">Username or Email</span>
           </div>
           <input
-            class="input input-bordered"
+            class="input input-bordered w-full"
             id="identifier"
             name="identifier"
             required
@@ -32,7 +32,7 @@
               <span class="label-text">Password</span>
           </div>
           <input
-            class="input input-bordered"
+            class="input input-bordered w-full"
             type="password"
             id="password"
             name="password"
