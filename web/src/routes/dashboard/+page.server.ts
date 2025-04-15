@@ -7,7 +7,8 @@ export const load = (async (event) => {
     if (!event.locals.user) {
         return redirect(302, '/login');
     } else {
-        const res = await event.fetch(`${env.PUBLIC_API_URL}/nutrition/entries/today`, {
+        const today = new Date().toLocaleDateString('sv-SE');
+        const res = await event.fetch(`${env.PUBLIC_API_URL}/nutrition/entries/${today}`, {
             method: 'GET',
 			headers: {
 			  'Content-Type': 'application/json',

@@ -13,16 +13,17 @@ export default async function (fastify: FastifyInstance) {
         return reply.send(entries);
     });
 
-    fastify.get('/nutrition/entries/today', async (request: FastifyRequest, reply: FastifyReply) => {
-      const today = new Date().toISOString().split('T')[0];
+    fastify.get('/nutrition/entries/:date', async (request: FastifyRequest<{ Params: { date: string } }>, reply: FastifyReply) => {
+      const { date } = request.params;
       const entries = await fastify.db.select()
-                                      .from(nutritionEntries)
-                                      .where(
-                                        and(
-                                          eq(nutritionEntries.userId, getUserIdFromRequest(request.user)),
-                                          eq(nutritionEntries.date, today)
-                                        )
-                                      );
+        .from(nutritionEntries)
+        .where(
+          and(
+            eq(nutritionEntries.userId, getUserIdFromRequest(request.user)),
+            eq(nutritionEntries.date, date)
+          )
+        );
+    
       return reply.send(entries);
     });
 
