@@ -1,1 +1,1 @@
-// place files you want to import through the `$lib` alias in this folder.
+export const isDev = process.env.NODE_ENV === "development";
